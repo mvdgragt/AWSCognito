@@ -9,6 +9,8 @@ import "./index.css";
 
 Amplify.configure(awsConfig);
 
+const queryClient = new QueryClient();
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
