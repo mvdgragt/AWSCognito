@@ -20,6 +20,14 @@ Applikationen består av ett React-baserat gränssnitt och ett serverlöst backe
 
 ---
 
+## Backend – Java Lambda
+
+Backenden är skriven i **Java 21** och körs som en AWS Lambda-funktion. Källkoden finns i mappen [`lambda/src/main/java/com/example/TodoHandler.java`](lambda/src/main/java/com/example/TodoHandler.java).
+
+Projektet byggs med **Maven** (`lambda/pom.xml`) och paketeras som en JAR-fil med alla beroenden (fat JAR via maven-shade-plugin) för uppladdning till AWS Lambda.
+
+---
+
 ## Koppling till AWS och Cognito
 
 ### AWS Cognito
