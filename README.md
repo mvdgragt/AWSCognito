@@ -36,7 +36,7 @@ Autentiseringen hanteras av **AWS Cognito User Pool** (`eu-north-1`). AWS Amplif
 
 API-anrop går via en **AWS HTTP API** (API Gateway) som skyddas av en **JWT-auktoriserare** kopplad till Cognito User Pool. Det innebär att alla anrop måste inkludera ett giltigt Cognito access token i `Authorization`-headern.
 
-Bakom API Gateway finns en **AWS Lambda-funktion** (Node.js) som hanterar all logik:
+Bakom API Gateway finns en **AWS Lambda-funktion** (Java 21) som hanterar all logik:
 
 | Metod | Sökväg | Beskrivning |
 |-------|--------|-------------|
@@ -77,7 +77,7 @@ Efter detta kan användaren inte längre logga in med sina uppgifter och all dat
 | Autentisering (klient) | AWS Amplify JS v6 |
 | Autentisering (server) | AWS Cognito User Pool |
 | API | AWS API Gateway (HTTP API) |
-| Backend | AWS Lambda (Node.js, ES Modules) |
+| Backend | AWS Lambda (Java 21, Maven) |
 | Databas | AWS DynamoDB |
 | Region | eu-north-1 (Stockholm) |
 
