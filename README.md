@@ -2,6 +2,8 @@
 
 En webbapplikation där användare kan registrera konto, logga in och hantera personliga uppgifter (att-göra-listor). Byggd med React och kopplad till AWS-tjänster för autentisering, API och datalagring.
 
+**Live:** https://main.d3kcx9eqx8e1al.amplifyapp.com
+
 ---
 
 ## Hur applikationen fungerar
