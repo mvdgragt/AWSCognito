@@ -1,7 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { fetchAuthSession } from "aws-amplify/auth";
-const API_URL = "https://DIN_API_GATEWAY_URL/todos";
-// Hämtar Access Token från Amplify för att bifoga i varje API-anrop
+
+const API_URL = import.meta.env.VITE_API_URL;
+
 async function getAuthHeaders() {
   const session = await fetchAuthSession();
   const token = session.tokens.accessToken.toString();
@@ -10,6 +11,7 @@ async function getAuthHeaders() {
     "Content-Type": "application/json",
   };
 }
+
 export function useTodos() {
   return useQuery({
     queryKey: ["todos"],
@@ -21,6 +23,7 @@ export function useTodos() {
     },
   });
 }
+
 export function useAddTodo() {
   const queryClient = useQueryClient();
   return useMutation({
@@ -34,12 +37,12 @@ export function useAddTodo() {
       if (!res.ok) throw new Error("Kunde inte skapa todo");
       return res.json();
     },
-    // Uppdatera cachen direkt utan att göra en ny GET-förfrågan
     onSuccess: (newTodo) => {
       queryClient.setQueryData(["todos"], (old) => [...(old || []), newTodo]);
     },
   });
 }
+
 export function useDeleteTodo() {
   const queryClient = useQueryClient();
   return useMutation({
@@ -55,6 +58,23 @@ export function useDeleteTodo() {
       queryClient.setQueryData(["todos"], (old) =>
         old.filter((t) => t.todoId !== todoId),
       );
+    },
+  });
+}
+
+export function useDeleteAccount() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async () => {
+      const headers = await getAuthHeaders();
+      const res = await fetch(API_URL.replace("/todos", "/account"), {
+        method: "DELETE",
+        headers,
+      });
+      if (!res.ok) throw new Error("Kunde inte ta bort konto");
+    },
+    onSuccess: () => {
+      queryClient.clear();
     },
   });
 }

@@ -2,14 +2,29 @@ import { useState } from "react";
 import { signOut, getCurrentUser } from "aws-amplify/auth";
 import { useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { fetchAuthSession } from "aws-amplify/auth";
-import { useTodos, useAddTodo, useDeleteTodo } from "../hooks/useTodos";
+import {
+  useDeleteAccount,
+  useTodos,
+  useAddTodo,
+  useDeleteTodo,
+} from "../hooks/userTodos";
+
 export default function DashboardPage() {
   const [text, setText] = useState("");
   const navigate = useNavigate();
   const { data: todos, isLoading } = useTodos();
   const addTodo = useAddTodo();
   const deleteTodo = useDeleteTodo();
+  const deleteAccount = useDeleteAccount();
+  async function handleDeleteAccount() {
+    const confirmed = window.confirm(
+      "Är du säker? Ditt konto och all data raderas permanent.",
+    );
+    if (!confirmed) return;
+    await deleteAccount.mutateAsync();
+    await signOut();
+    navigate({ to: "/login" });
+  }
   // Hämta aktuell användares e-post
   const { data: user } = useQuery({
     queryKey: ["currentUser"],
@@ -56,6 +71,13 @@ export default function DashboardPage() {
           </li>
         ))}
       </ul>
+      <button
+        onClick={handleDeleteAccount}
+        disabled={deleteAccount.isPending}
+        style={{ color: "red" }}
+      >
+        {deleteAccount.isPending ? "Raderar..." : "Ta bort mitt konto"}
+      </button>
     </div>
   );
 }
