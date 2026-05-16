@@ -18,7 +18,7 @@ export function useTodos() {
     queryFn: async () => {
       const headers = await getAuthHeaders();
       const res = await fetch(API_URL, { headers });
-      if (!res.ok) throw new Error("Kunde inte hämta todos");
+      if (!res.ok) throw new Error("Kunde inte hämta uppgifter");
       return res.json();
     },
   });
@@ -34,7 +34,7 @@ export function useAddTodo() {
         headers,
         body: JSON.stringify({ text }),
       });
-      if (!res.ok) throw new Error("Kunde inte skapa todo");
+      if (!res.ok) throw new Error("Kunde inte skapa uppgift");
       return res.json();
     },
     onSuccess: (newTodo) => {

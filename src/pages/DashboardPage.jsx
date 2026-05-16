@@ -16,6 +16,24 @@ export default function DashboardPage() {
   const addTodo = useAddTodo();
   const deleteTodo = useDeleteTodo();
   const deleteAccount = useDeleteAccount();
+
+  const { data: user } = useQuery({
+    queryKey: ["currentUser"],
+    queryFn: getCurrentUser,
+  });
+
+  async function handleLogout() {
+    await signOut();
+    navigate({ to: "/login" });
+  }
+
+  async function handleAdd(e) {
+    e.preventDefault();
+    if (!text.trim()) return;
+    await addTodo.mutateAsync(text);
+    setText("");
+  }
+
   async function handleDeleteAccount() {
     const confirmed = window.confirm(
       "Är du säker? Ditt konto och all data raderas permanent.",
@@ -25,59 +43,79 @@ export default function DashboardPage() {
     await signOut();
     navigate({ to: "/login" });
   }
-  // Hämta aktuell användares e-post
-  const { data: user } = useQuery({
-    queryKey: ["currentUser"],
-    queryFn: getCurrentUser,
-  });
-  async function handleLogout() {
-    await signOut();
-    navigate({ to: "/login" });
-  }
-  async function handleAdd(e) {
-    e.preventDefault();
-    if (!text.trim()) return;
-    await addTodo.mutateAsync(text);
-    setText("");
-  }
+
   return (
-    <div>
-      <header>
-        <h1>Mina todos</h1>
-        {user && <p>Inloggad som: {user.signInDetails?.loginId}</p>}
-        <button onClick={handleLogout}>Logga ut</button>
-      </header>
-      <form onSubmit={handleAdd}>
-        <input
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder="Ny todo..."
-        />
-        <button type="submit" disabled={addTodo.isPending}>
-          {addTodo.isPending ? "Lägger till..." : "Lägg till"}
-        </button>
-      </form>
-      {isLoading && <p>Laddar...</p>}
-      <ul>
-        {todos?.map((todo) => (
-          <li key={todo.todoId}>
-            <span>{todo.text}</span>
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-lg mx-auto px-4 py-10">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h1 className="text-xl font-semibold text-gray-900">Mina uppgifter</h1>
+            {user && (
+              <p className="text-sm text-gray-400">{user.signInDetails?.loginId}</p>
+            )}
+          </div>
+          <button
+            onClick={handleLogout}
+            className="text-sm text-gray-400 hover:text-gray-900 transition-colors"
+          >
+            Logga ut
+          </button>
+        </div>
+
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+          <form onSubmit={handleAdd} className="flex gap-2 mb-5">
+            <input
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              placeholder="Ny uppgift..."
+              className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-200"
+            />
             <button
-              onClick={() => deleteTodo.mutate(todo.todoId)}
-              disabled={deleteTodo.isPending}
+              type="submit"
+              disabled={addTodo.isPending}
+              className="bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-700 transition-colors disabled:opacity-50"
             >
-              Ta bort
+              {addTodo.isPending ? "..." : "Lägg till"}
             </button>
-          </li>
-        ))}
-      </ul>
-      <button
-        onClick={handleDeleteAccount}
-        disabled={deleteAccount.isPending}
-        style={{ color: "red" }}
-      >
-        {deleteAccount.isPending ? "Raderar..." : "Ta bort mitt konto"}
-      </button>
+          </form>
+
+          {isLoading ? (
+            <p className="text-sm text-gray-400 text-center py-6">Laddar...</p>
+          ) : todos?.length === 0 ? (
+            <p className="text-sm text-gray-400 text-center py-6">
+              Inga uppgifter än. Lägg till en ovan!
+            </p>
+          ) : (
+            <ul className="flex flex-col divide-y divide-gray-50">
+              {todos?.map((todo) => (
+                <li
+                  key={todo.todoId}
+                  className="flex items-center justify-between py-3 px-2 rounded-lg hover:bg-gray-50 group"
+                >
+                  <span className="text-sm text-gray-700">{todo.text}</span>
+                  <button
+                    onClick={() => deleteTodo.mutate(todo.todoId)}
+                    disabled={deleteTodo.isPending}
+                    className="text-xs text-gray-300 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100 disabled:opacity-30"
+                  >
+                    Ta bort
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        <div className="mt-8 text-center">
+          <button
+            onClick={handleDeleteAccount}
+            disabled={deleteAccount.isPending}
+            className="text-xs text-gray-300 hover:text-red-400 transition-colors"
+          >
+            {deleteAccount.isPending ? "Raderar..." : "Ta bort mitt konto"}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
