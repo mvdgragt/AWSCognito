@@ -1,4 +1,4 @@
-# Uppgiftshanteraren – AWS Cognito-projekt
+# Uppgiftshanteraren: AWS Cognito-projekt
 
 En webbapplikation där användare kan registrera konto, logga in och hantera personliga uppgifter (att-göra-listor). Byggd med React (frontend) och Spring Boot (backend) med fullständig **AWS Cognito-integration på serversidan**.
 
@@ -6,14 +6,14 @@ En webbapplikation där användare kan registrera konto, logga in och hantera pe
 
 ---
 
-## ✅ Feedback från instruktör implementerad
+## Feedback från instruktör implementerad
 
 Denna lösning implementerar **lärarens feedback** genom att:
-- ✅ Använda **Spring Boot** som backend (inte bara Lambda)
-- ✅ Integrera **AWS Cognito User Pool direkt i Java-koden** (via AWS SDK)
-- ✅ Hantera signup, confirm, login och logout **på serversidan**
-- ✅ Validera JWT-tokens från Cognito **i Spring Boot Security**
-- ✅ Visa all integrationskod tydligt i källkoden
+- Använda **Spring Boot** som backend (inte bara Lambda)
+- Integrera **AWS Cognito User Pool direkt i Java-koden** (via AWS SDK)
+- Hantera signup, confirm, login och logout **på serversidan**
+- Validera JWT-tokens från Cognito **i Spring Boot Security**
+- Visa all integrationskod tydligt i källkoden
 
 Applikationen visar därmed att **Cognito-integrationen är självskriven i egen kod**, inte bara delegerad till externa tjänster.
 
@@ -27,31 +27,31 @@ Applikationen består av:
 
 ### Funktioner
 
-- **Registrering** – Användaren skickar e-post och lösenord till Spring Boot backend (`POST /auth/signup`). Backend kommunicerar direkt med AWS Cognito User Pool och registrerar användaren. En verifieringskod skickas till e-postadressen.
-  
-- **Bekräftelse** – Användaren enters verifieringskoden (`POST /auth/confirm`). Backend validerar koden mot Cognito.
+- **Registrering**: Användaren skickar e-post och lösenord till Spring Boot backend (`POST /auth/signup`). Backend kommunicerar direkt med AWS Cognito User Pool och registrerar användaren. En verifieringskod skickas till e-postadressen.
 
-- **Inloggning** – Inloggning sker mot Spring Boot backend (`POST /auth/login`). Backend autentiserar användaren mot Cognito User Pool och returnerar JWT-tokens (access token + ID token). Tokens lagras i frontend.
+- **Bekräftelse**: Användaren enters verifieringskoden (`POST /auth/confirm`). Backend validerar koden mot Cognito.
 
-- **Uppgifter** – Inloggad användare kan (via React) lägga till, ändra och ta bort egna uppgifter. Alla förfrågningar inkluderar JWT-tokens i `Authorization`-headern. Spring Boot **validerar JWT-tokens** från Cognito och säkerställer att användaren endast har tillgång till egna uppgifter.
+- **Inloggning**: Inloggning sker mot Spring Boot backend (`POST /auth/login`). Backend autentiserar användaren mot Cognito User Pool och returnerar JWT-tokens (access token + ID token). Tokens lagras i frontend.
 
-- **Utloggning** – Sessionen avslutas på klientsidan och tokens raderas.
+- **Uppgifter**: Inloggad användare kan (via React) lägga till, ändra och ta bort egna uppgifter. Alla förfrågningar inkluderar JWT-tokens i `Authorization`-headern. Spring Boot **validerar JWT-tokens** från Cognito och säkerställer att användaren endast har tillgång till egna uppgifter.
 
-- **Ta bort konto** – Inloggad användare kan radera sitt konto. Backend tar bort användarens data från databas och raderar användarens Cognito-konto via AWS SDK.
+- **Utloggning**: Sessionen avslutas på klientsidan och tokens raderas.
+
+- **Ta bort konto**: Inloggad användare kan radera sitt konto. Backend tar bort användarens data från databas och raderar användarens Cognito-konto via AWS SDK.
 
 ---
 
-## Backend – Spring Boot med Cognito-integration
+## Backend: Spring Boot med Cognito-integration
 
 Backenden är en **Spring Boot-applikation** (Java 21) med direktintegrerad **AWS Cognito User Pool**-kontroll. Källkoden finns i mappen [`backend/src/main/java/com/example/cognitobackend/`](backend/src/main/java/com/example/cognitobackend/).
 
 ### Arkitektur
 
 **Autentisering (Auth Controller)**:
-- `/auth/signup` – Registrerar nya användare direkt i Cognito User Pool
-- `/auth/confirm` – Bekräftar användarens e-postadress med verifieringskod
-- `/auth/login` – Autentiserar användare mot Cognito och returnerar JWT-tokens
-- `/auth/me` – Returnerar info om inloggad användare (från JWT-claims)
+- `/auth/signup`  Registrerar nya användare direkt i Cognito User Pool
+- `/auth/confirm`  Bekräftar användarens e-postadress med verifieringskod
+- `/auth/login`  Autentiserar användare mot Cognito och returnerar JWT-tokens
+- `/auth/me`  Returnerar info om inloggad användare (från JWT-claims)
 
 **Säkerhet (Security Config & OAuth2)**:
 - Alla endpoints (förutom `/auth/signup`, `/auth/confirm`, `/auth/login`) kräver giltigt JWT-token från Cognito
@@ -74,9 +74,9 @@ Projektet byggs med **Maven** (`backend/pom.xml`).
 Autentiseringen hanteras av **AWS Cognito User Pool** (`eu-north-1`). **Spring Boot-backenden kommunicerar direkt** med Cognito via AWS SDK (inte via Amplify på klienten):
 
 **Operationer som Spring Boot-koden gör**:
-- `AdminCreateUserCommand` – Registrerar nya användare (signup)
-- `ConfirmSignUpRequest` – Bekräftar användarens e-post
-- `InitiateAuthCommand` – Autentiserar användare och hämtar JWT-tokens
+- `AdminCreateUserCommand`  Registrerar nya användare (signup)
+- `ConfirmSignUpRequest`  Bekräftar användarens e-post
+- `InitiateAuthCommand`  Autentiserar användare och hämtar JWT-tokens
 - `DeleteUserCommand` – Raderar användarkonto
 
 **JWT-validering**:
