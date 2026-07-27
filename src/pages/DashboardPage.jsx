@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { signOut, getCurrentUser } from "aws-amplify/auth";
 import { useNavigate } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   useDeleteAccount,
   useTodos,
@@ -11,7 +11,10 @@ import {
 
 export default function DashboardPage() {
   const [text, setText] = useState("");
+  const [actionError, setActionError] = useState("");
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { data: todos, isLoading } = useTodos();
   const addTodo = useAddTodo();
   const deleteTodo = useDeleteTodo();
@@ -23,15 +26,30 @@ export default function DashboardPage() {
   });
 
   async function handleLogout() {
-    await signOut();
-    navigate({ to: "/login" });
+    if (isLoggingOut) return;
+    setActionError("");
+    setIsLoggingOut(true);
+    await queryClient.cancelQueries();
+    queryClient.clear();
+    try {
+      await signOut();
+    } catch {
+      // Ignore sign-out errors if session is already gone.
+    } finally {
+      navigate({ to: "/login" });
+    }
   }
 
   async function handleAdd(e) {
     e.preventDefault();
     if (!text.trim()) return;
-    await addTodo.mutateAsync(text);
-    setText("");
+    setActionError("");
+    try {
+      await addTodo.mutateAsync(text);
+      setText("");
+    } catch {
+      setActionError("Kunde inte skapa uppgift just nu.");
+    }
   }
 
   async function handleDeleteAccount() {
@@ -39,9 +57,13 @@ export default function DashboardPage() {
       "Är du säker? Ditt konto och all data raderas permanent.",
     );
     if (!confirmed) return;
-    await deleteAccount.mutateAsync();
-    await signOut();
-    navigate({ to: "/login" });
+    setActionError("");
+    try {
+      await deleteAccount.mutateAsync();
+      await handleLogout();
+    } catch {
+      setActionError("Kunde inte ta bort kontot just nu.");
+    }
   }
 
   return (
@@ -55,10 +77,13 @@ export default function DashboardPage() {
             )}
           </div>
           <button
-            onClick={handleLogout}
+            onClick={() => {
+              void handleLogout();
+            }}
+            disabled={isLoggingOut}
             className="text-sm text-gray-400 hover:text-gray-900 transition-colors"
           >
-            Logga ut
+            {isLoggingOut ? "Loggar ut..." : "Logga ut"}
           </button>
         </div>
 
@@ -78,6 +103,9 @@ export default function DashboardPage() {
               {addTodo.isPending ? "..." : "Lägg till"}
             </button>
           </form>
+          {actionError && (
+            <p className="text-sm text-red-500 mb-4">{actionError}</p>
+          )}
 
           {isLoading ? (
             <p className="text-sm text-gray-400 text-center py-6">Laddar...</p>

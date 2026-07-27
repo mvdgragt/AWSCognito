@@ -5,7 +5,10 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 async function getAuthHeaders() {
   const session = await fetchAuthSession();
-  const token = session.tokens.accessToken.toString();
+  const token = session.tokens?.accessToken?.toString();
+  if (!token) {
+    throw new Error("Not authenticated");
+  }
   return {
     Authorization: `Bearer ${token}`,
     "Content-Type": "application/json",
@@ -15,6 +18,7 @@ async function getAuthHeaders() {
 export function useTodos() {
   return useQuery({
     queryKey: ["todos"],
+    retry: false,
     queryFn: async () => {
       const headers = await getAuthHeaders();
       const res = await fetch(API_URL, { headers });

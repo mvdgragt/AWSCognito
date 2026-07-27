@@ -107,5 +107,36 @@ Applikationen kräver en `.env`-fil med följande variabler:
 VITE_COGNITO_USER_POOL_ID=<user-pool-id>
 VITE_COGNITO_CLIENT_ID=<app-client-id>
 VITE_COGNITO_REGION=eu-north-1
-VITE_API_URL=/api/todos
+VITE_API_URL=<api-url-som-slutar-med-/todos>
 ```
+
+### API-path i frontend (viktigt)
+
+Frontend-koden använder `VITE_API_URL` direkt i `fetch(...)` för todos-anrop.
+
+- `GET/POST/DELETE todos` går mot exakt `VITE_API_URL`
+- `DELETE account` byggs som `VITE_API_URL.replace("/todos", "/account")`
+
+Det betyder att `VITE_API_URL` **måste** sluta med `/todos`.
+
+Exempel:
+
+- Lokal/dev via Vite-proxy: `VITE_API_URL=/api/todos`
+- Direkt mot API Gateway-stage: `VITE_API_URL=https://<api-id>.execute-api.eu-north-1.amazonaws.com/development/todos`
+
+### Verifiering av drift-path
+
+I detta repo används i produktion `/.env.production`:
+
+```
+VITE_API_URL=https://xfnqpyyu28.execute-api.eu-north-1.amazonaws.com/development/todos
+```
+
+Det matchar backend-routes i Lambda:
+
+- `GET /todos`
+- `POST /todos`
+- `DELETE /todos`
+- `DELETE /account`
+
+Alltsa: frontend-traff i drift ar korrekt sa lange builden faktiskt anvander `/.env.production` (vilket `vite build` gor).
