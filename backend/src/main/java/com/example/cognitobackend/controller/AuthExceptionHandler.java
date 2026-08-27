@@ -20,34 +20,43 @@ public class AuthExceptionHandler {
 
     @ExceptionHandler(UsernameExistsException.class)
     public ResponseEntity<Map<String, String>> handleUsernameExists(UsernameExistsException ex) {
-        return response(HttpStatus.CONFLICT, ex);
+        return response(HttpStatus.CONFLICT, "Det finns redan ett konto med den e-postadressen");
     }
 
-    @ExceptionHandler({InvalidPasswordException.class, InvalidParameterException.class, CodeMismatchException.class, ExpiredCodeException.class})
-    public ResponseEntity<Map<String, String>> handleBadRequest(RuntimeException ex) {
-        return response(HttpStatus.BAD_REQUEST, ex);
+    @ExceptionHandler(InvalidPasswordException.class)
+    public ResponseEntity<Map<String, String>> handleInvalidPassword(InvalidPasswordException ex) {
+        return response(HttpStatus.BAD_REQUEST, "Lösenordet uppfyller inte kraven");
+    }
+
+    @ExceptionHandler(InvalidParameterException.class)
+    public ResponseEntity<Map<String, String>> handleInvalidParameter(InvalidParameterException ex) {
+        return response(HttpStatus.BAD_REQUEST, "Ogiltiga uppgifter");
+    }
+
+    @ExceptionHandler({CodeMismatchException.class, ExpiredCodeException.class})
+    public ResponseEntity<Map<String, String>> handleBadCode(RuntimeException ex) {
+        return response(HttpStatus.BAD_REQUEST, "Fel eller utgången bekräftelsekod");
     }
 
     @ExceptionHandler(UserNotConfirmedException.class)
     public ResponseEntity<Map<String, String>> handleUserNotConfirmed(UserNotConfirmedException ex) {
-        return response(HttpStatus.UNAUTHORIZED, ex);
+        return response(HttpStatus.UNAUTHORIZED, "Kontot är inte bekräftat ännu");
     }
 
     @ExceptionHandler(NotAuthorizedException.class)
     public ResponseEntity<Map<String, String>> handleNotAuthorized(NotAuthorizedException ex) {
-        return response(HttpStatus.UNAUTHORIZED, ex);
+        return response(HttpStatus.UNAUTHORIZED, "Fel e-postadress eller lösenord");
     }
 
     @ExceptionHandler(CognitoIdentityProviderException.class)
     public ResponseEntity<Map<String, String>> handleCognitoFallback(CognitoIdentityProviderException ex) {
-        return response(HttpStatus.BAD_GATEWAY, ex);
+        return response(HttpStatus.BAD_GATEWAY, "Ett fel uppstod, försök igen senare");
     }
 
-    private ResponseEntity<Map<String, String>> response(HttpStatus status, RuntimeException ex) {
+    private ResponseEntity<Map<String, String>> response(HttpStatus status, String message) {
         return ResponseEntity.status(status).body(Map.of(
                 "error", status.getReasonPhrase(),
-                "message", ex.getMessage()
+                "message", message
         ));
     }
 }
-
