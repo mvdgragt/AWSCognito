@@ -2,7 +2,7 @@
 
 En webbapplikation där användare kan registrera konto, logga in och hantera personliga uppgifter (att-göra-listor). Byggd med React (frontend) och Spring Boot (backend) med fullständig **AWS Cognito-integration på serversidan**.
 
-**Live:** _(fylls i efter driftsättning)_
+**Live:** _https://spring-boot-backend.d37tud3z6getmf.amplifyapp.com/_
 
 ---
 
@@ -164,3 +164,5 @@ VITE_API_URL=http://localhost:8080
 ### Spring Boot-konfiguration
 
 Spring Boot kräver följande miljövariabler för Cognito-tillgång:
+COGNITO_USER_POOL_ID=<din-user-pool-id>
+COGNITO_CLIENT_ID=<din-app-client-id>
