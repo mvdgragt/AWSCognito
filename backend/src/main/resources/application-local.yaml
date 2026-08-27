@@ -1,0 +1,4 @@
+aws:
+  cognito:
+    user-pool-id: eu-north-1_Kjk1GdLnf
+    client-id: 2oc4bgarl766dmrqjgbj43fpm9

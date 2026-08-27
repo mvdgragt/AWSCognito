@@ -1,1 +1,13 @@
 /Users/mvdgragt/Documents/03 Jensen/AWSCognitoTodoProject/backend/src/main/java/com/example/cognitobackend/CognitoBackendApplication.java
+/Users/mvdgragt/Documents/03 Jensen/AWSCognitoTodoProject/backend/src/main/java/com/example/cognitobackend/config/CognitoClientConfig.java
+/Users/mvdgragt/Documents/03 Jensen/AWSCognitoTodoProject/backend/src/main/java/com/example/cognitobackend/config/DynamoDbConfig.java
+/Users/mvdgragt/Documents/03 Jensen/AWSCognitoTodoProject/backend/src/main/java/com/example/cognitobackend/controller/AccountController.java
+/Users/mvdgragt/Documents/03 Jensen/AWSCognitoTodoProject/backend/src/main/java/com/example/cognitobackend/controller/AuthController.java
+/Users/mvdgragt/Documents/03 Jensen/AWSCognitoTodoProject/backend/src/main/java/com/example/cognitobackend/controller/AuthExceptionHandler.java
+/Users/mvdgragt/Documents/03 Jensen/AWSCognitoTodoProject/backend/src/main/java/com/example/cognitobackend/controller/TodoController.java
+/Users/mvdgragt/Documents/03 Jensen/AWSCognitoTodoProject/backend/src/main/java/com/example/cognitobackend/dto/AuthDtos.java
+/Users/mvdgragt/Documents/03 Jensen/AWSCognitoTodoProject/backend/src/main/java/com/example/cognitobackend/dto/TodoDtos.java
+/Users/mvdgragt/Documents/03 Jensen/AWSCognitoTodoProject/backend/src/main/java/com/example/cognitobackend/model/Todo.java
+/Users/mvdgragt/Documents/03 Jensen/AWSCognitoTodoProject/backend/src/main/java/com/example/cognitobackend/repository/TodoRepository.java
+/Users/mvdgragt/Documents/03 Jensen/AWSCognitoTodoProject/backend/src/main/java/com/example/cognitobackend/security/SecurityConfig.java
+/Users/mvdgragt/Documents/03 Jensen/AWSCognitoTodoProject/backend/src/main/java/com/example/cognitobackend/service/CognitoService.java
