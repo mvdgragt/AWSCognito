@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { signIn } from "aws-amplify/auth";
 import { useNavigate } from "@tanstack/react-router";
 
 export default function LoginPage() {
@@ -12,7 +11,22 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
     try {
-      await signIn({ username: email, password });
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message || "Inloggning misslyckades");
+      }
+
+      const data = await res.json();
+      localStorage.setItem("accessToken", data.accessToken);
+      localStorage.setItem("idToken", data.idToken);
+      localStorage.setItem("refreshToken", data.refreshToken);
+
       navigate({ to: "/dashboard" });
     } catch (err) {
       setError(err.message);

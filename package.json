@@ -15,7 +15,6 @@
     "@tanstack/react-query-devtools": "^5.100.10",
     "@tanstack/react-router": "^1.169.2",
     "@tanstack/router-devtools": "^1.166.13",
-    "aws-amplify": "^6.17.0",
     "dotenv": "^17.4.2",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",

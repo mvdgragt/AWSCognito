@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { confirmSignUp } from "aws-amplify/auth";
 import { useNavigate, useSearch } from "@tanstack/react-router";
 
 export default function ConfirmPage() {
@@ -11,8 +10,19 @@ export default function ConfirmPage() {
 
   const handleConfirm = async (e) => {
     e.preventDefault();
+    setError("");
     try {
-      await confirmSignUp({ username: email, confirmationCode: code });
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/confirm`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, code }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message || "Bekräftelse misslyckades");
+      }
+
       setConfirmed(true);
     } catch (err) {
       setError(err.message);

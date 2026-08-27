@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { signUp } from "aws-amplify/auth";
 import { useNavigate } from "@tanstack/react-router";
 
 export default function RegisterPage() {
@@ -12,13 +11,17 @@ export default function RegisterPage() {
     e.preventDefault();
     setError("");
     try {
-      await signUp({
-        username: email,
-        password,
-        options: {
-          userAttributes: { email },
-        },
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/signup`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
       });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message || "Registrering misslyckades");
+      }
+
       navigate({ to: "/confirm", search: { email } });
     } catch (err) {
       setError(err.message);
